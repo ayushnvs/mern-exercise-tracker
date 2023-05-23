@@ -6,12 +6,6 @@ export default class CreateExercise extends Component {
     constructor(props) {
         super(props)
 
-        this.onChangeUsername = this.onChangeUsername.bind(this)
-        this.onChangeDescription = this.onChangeDescription(this)
-        this.onChangeDuration  = this.onChangeDuration.bind(this)
-        this.onChangeDate = this.onChangeDate.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
-
         this.state = {
             username: '',
             description: '',
@@ -23,64 +17,43 @@ export default class CreateExercise extends Component {
 
     componentDidMount() {
         this.setState({
-            users: ['test user'],
+            users: ['test user 1', 'test user 2'],
             username: 'test user'
         })
-    }
-
-    onChangeUsername(e) {
-        this.setState({
-            username: e.target.value
-        })
-    }
-
-    onChangeDescription(e) {
-        this.setState({
-            // description: e.target.value //TODO
-
-        })
-    }
-
-    onChangeDuration(e) {
-        this.setState({
-            duration: e.target.value
-        })
-    }
-
-    onChangeDate(date) {
-        this.setState({
-            date: date
-        })
-    }
-
-    onSubmit(e) {
-        e.preventDefault();
-
-        const exercise = {
-            username: this.state.username,
-            description: this.state.description,
-            duration: this.state.duration,
-            date: this.state.date
-        }
-
-        console.log(exercise)
-
-        window.location = '/'
     }
 
     render() {
         return (
             <div>
                 <h3>Create New Exercise Log</h3>
-                <form onSubmit={this.onSubmit}>
+                <form onSubmit={(e)=>{
+                    e.preventDefault();
+
+                    const exercise = {
+                        username: this.state.username,
+                        description: this.state.description,
+                        duration: this.state.duration,
+                        date: this.state.date
+                    }
+
+                    console.log(exercise)
+
+                    window.location = '/'
+                }}>
                     <div className="form-group">
-                        <label>Username: </label>
-                        <select ref="userInput"
+                        <label htmlFor="username">Username: </label>
+                        <select
                             required
                             className="form-control"
+                            id="username"
                             value={this.state.username}
-                            onChange={this.state.onChangeUsername}>
-                            {this.state.users.map(function(user){
+                            name="username"
+                            onChange={(e) => {
+                                this.setState({
+                                    username: e.currentTarget.value
+                                })
+                            }}>
+                            {this.state.users.map(function (user) {
                                 return <option
                                     key={user}
                                     value={user}>
@@ -90,19 +63,31 @@ export default class CreateExercise extends Component {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Description: </label>
+                        <label htmlFor="description">Description: </label>
                         <input type="text"
                             className="form-control"
+                            id="description"
+                            name="description"
+                            onChange={(e) => {
+                                this.setState({
+                                    description: e.currentTarget.value
+                                })
+                            }}
                             value={this.state.description}
-                            onChange={this.onChangeDescription}
                         />
                     </div>
                     <div className="form-group">
-                        <label>Duration: </label>
+                        <label htmlFor="duration">Duration (In minutes): </label>
                         <input type="text"
                             className="form-control"
-                            value={this.state.duration} 
-                            onChange={this.onChangeDuration}
+                            id="duration"
+                            name="duration"
+                            onChange={(e) => {
+                                this.setState({
+                                    duration: e.currentTarget.value
+                                })
+                            }}
+                            value={this.state.duration}
                         />
                     </div>
                     <div className="form-group">
@@ -110,14 +95,18 @@ export default class CreateExercise extends Component {
                         <div>
                             <DatePicker
                                 selected={this.state.date}
-                                onChange={this.onChangeDate}
+                                onChange={(date) => {
+                                    this.setState({
+                                        date: date
+                                    })
+                                }}
                             />
                         </div>
                     </div>
 
-                    <div className="form-group">
-                            <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
-                    </div> 
+                    <div className="form-group mt-3">
+                        <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
+                    </div>
                 </form>
             </div>
         )
