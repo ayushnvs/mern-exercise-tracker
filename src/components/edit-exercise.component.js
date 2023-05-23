@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import {useParams} from 'react-router-dom';
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
 import axios from 'axios'
 
-export default class EditExercise extends Component {
+class EditExercise extends Component {
     constructor(props) {
         super(props)
 
@@ -18,14 +19,22 @@ export default class EditExercise extends Component {
 
     componentDidMount() {
 
-
+        axios.get('http://localhost:5000/exercises/'+this.props.params.id)
+            .then(response => {
+                this.setState({
+                    username: response.data.username,
+                    description: response.data.description,
+                    duration: response.data.duration,
+                    date: new Date(response.data.date)
+                })
+            })
+            .catch(err => console.log(err))
 
         axios.get('http://localhost:5000/users')
             .then(response => {
                 if (response.data.length > 0) {
                     this.setState({
-                        users: response.data.map(user => user.username),
-                        username: response.data[0].username
+                        users: response.data.map(user => user.username)
                     })
                 }
             })
@@ -34,7 +43,7 @@ export default class EditExercise extends Component {
     render() {
         return (
             <div>
-                <h3>Create New Exercise Log</h3>
+                <h3>Edit Exercise Log</h3>
                 <form onSubmit={(e)=>{
                     e.preventDefault();
 
@@ -47,7 +56,7 @@ export default class EditExercise extends Component {
 
                     console.log(exercise)
 
-                    axios.post('http://localhost:5000/exercises/add', exercise)
+                    axios.post('http://localhost:5000/exercises/update/'+this.props.params.id, exercise)
                         .then(res => console.log(res.data))
 
                     window.location = '/'
@@ -117,10 +126,23 @@ export default class EditExercise extends Component {
                     </div>
 
                     <div className="form-group mt-3">
-                        <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
+                        <input type="submit" value="Edit Exercise Log" className="btn btn-primary" />
                     </div>
                 </form>
             </div>
         )
     }
 }
+
+const withRouter = WrappedComponent => props => {
+    const params = useParams();
+
+    return (
+        <WrappedComponent
+            {...props}
+            params={params}
+        />
+    );
+};
+
+export default withRouter(EditExercise)
