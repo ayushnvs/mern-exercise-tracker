@@ -28,7 +28,9 @@ export default class CreateUser extends Component {
                             id="username"
                             name="username"
                             onChange={(e) => {
-                                this.setState = e.currentTarget.value
+                                this.setState({
+                                    username: e.currentTarget.value
+                                })
                             }}
                             value={this.state.username}
                         />
